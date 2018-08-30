@@ -12,7 +12,8 @@ composer require stephanecoinon/papertrail
 
 ## Configuration
 
-It is good practice *not* to include credentials in your code so passwords are not stored in version control. Keeping sensitive info in your code could become an issue when you need to open source or share your code with other developers. For this reason, this package will get your papertrail log server details from environment variables `PAPERTRAIL_HOST` and `PAPERTRAIL_PORT` by default.
+It is good practice *not* to include credentials in your code so passwords are not stored in version control. Keeping sensitive info in your code could become an issue when you need to open source or share your code with other developers. For this reason, this package will get your papertrail log server details from environment variables
+`PAPERTRAIL_HOST`, `PAPERTRAIL_PORT` and `PAPERTRAIL_HOSTNAME` by default.
 
 This package ships with 2 drivers:
 
