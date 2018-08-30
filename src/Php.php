@@ -3,7 +3,6 @@
 namespace StephaneCoinon\Papertrail;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\SyslogUdpHandler;
 
 class Php
 {
@@ -22,10 +21,11 @@ class Php
      * @param  string $host   Papertrail log server, ie log.papertrailapp.com
      * @param  int $port      Papertrail port number for log server
      * @param  string $prefix Prefix to use for each log message
+     * @param  string $hostname The hostname to use when logging messages
      */
-    protected function __construct($host, $port, $prefix)
+    protected function __construct($host, $port, $prefix, $hostname = null)
     {
-        $this->handler = $this->getHandler($host, $port, $prefix);
+        $this->handler = $this->getHandler($host, $port, $prefix, $hostname);
     }
 
     /**
@@ -39,13 +39,14 @@ class Php
      * @param  string $prefix Prefix to use for each log message
      * @return \Psr\Log\LoggerInterface
      */
-    public static function boot($host = null, $port = null, $prefix = '')
+    public static function boot($host = null, $port = null, $prefix = '', $hostname = '')
     {
         $host or $host = getenv('PAPERTRAIL_HOST');
         $port or $port = getenv('PAPERTRAIL_PORT');
+        $hostname or $hostname = getenv('PAPERTRAIL_HOSTNAME');
         $prefix and $prefix = "[$prefix] ";
 
-        return (new static($host, $port, $prefix))
+        return (new static($host, $port, $prefix, $hostname))
             ->detectFrameworkOrFail()
             ->registerPapertrailHandler();
     }
@@ -69,9 +70,10 @@ class Php
      * @param string $prefix
      * @return \Monolog\Handler\HandlerInterface
      */
-    public function getHandler($host, $port, $prefix)
+    public function getHandler($host, $port, $prefix, $hostname)
     {
-        $syslog = new SyslogUdpHandler($host, $port);
+        $syslog = new CustomSyslogUdpHandler($host, $port);
+        $syslog->setHostName($hostname);
         $formatter = new LineFormatter("$prefix%channel%.%level_name%: %message% %extra%");
         $syslog->setFormatter($formatter);
 
