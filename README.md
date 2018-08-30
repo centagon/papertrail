@@ -7,7 +7,7 @@ Easily integrate [Papertrail log monitor](https://papertrailapp.com) in your PHP
 ## Installation
 
 ```bash
-composer require stephanecoinon/papertrail
+composer require centagon/papertrail
 ```
 
 ## Configuration
