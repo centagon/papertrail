@@ -26,6 +26,7 @@ class Php {
      */
     protected function __construct($host, $port, $prefix, $hostname = null, $log_level = null)
     {
+        $log_level or $log_level = Logger::DEBUG;
         $this->handler = $this->getHandler($host, $port, $prefix, $hostname, $log_level);
     }
 
@@ -40,7 +41,7 @@ class Php {
      * @param  string $prefix Prefix to use for each log message
      * @return \Psr\Log\LoggerInterface
      */
-    public static function boot($host = null, $port = null, $prefix = '', $hostname = '', $log_level = Logger::DEBUG)
+    public static function boot($host = null, $port = null, $prefix = '', $hostname = '', $log_level = null)
     {
         $host or $host = getenv('PAPERTRAIL_HOST');
         $port or $port = getenv('PAPERTRAIL_PORT');
