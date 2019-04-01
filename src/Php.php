@@ -3,9 +3,10 @@
 namespace StephaneCoinon\Papertrail;
 
 use Monolog\Formatter\LineFormatter;
+use Monolog\Logger;
 
-class Php
-{
+class Php {
+
     public static $defaultLoggerName = 'PHP';
 
     /**
@@ -23,9 +24,9 @@ class Php
      * @param  string $prefix Prefix to use for each log message
      * @param  string $hostname The hostname to use when logging messages
      */
-    protected function __construct($host, $port, $prefix, $hostname = null)
+    protected function __construct($host, $port, $prefix, $hostname = null, $log_level = null)
     {
-        $this->handler = $this->getHandler($host, $port, $prefix, $hostname);
+        $this->handler = $this->getHandler($host, $port, $prefix, $hostname, $log_level);
     }
 
     /**
@@ -39,16 +40,17 @@ class Php
      * @param  string $prefix Prefix to use for each log message
      * @return \Psr\Log\LoggerInterface
      */
-    public static function boot($host = null, $port = null, $prefix = '', $hostname = '')
+    public static function boot($host = null, $port = null, $prefix = '', $hostname = '', $log_level = Logger::DEBUG)
     {
         $host or $host = getenv('PAPERTRAIL_HOST');
         $port or $port = getenv('PAPERTRAIL_PORT');
         $hostname or $hostname = getenv('PAPERTRAIL_HOSTNAME');
+        $log_level or $log_level = getenv('APP_LOG_LEVEL');
         $prefix and $prefix = "[$prefix] ";
 
-        return (new static($host, $port, $prefix, $hostname))
-            ->detectFrameworkOrFail()
-            ->registerPapertrailHandler();
+        return (new static($host, $port, $prefix, $hostname, $log_level))
+                        ->detectFrameworkOrFail()
+                        ->registerPapertrailHandler();
     }
 
     /**
@@ -70,9 +72,9 @@ class Php
      * @param string $prefix
      * @return \Monolog\Handler\HandlerInterface
      */
-    public function getHandler($host, $port, $prefix, $hostname)
+    public function getHandler($host, $port, $prefix, $hostname, $log_level = Logger::DEBUG)
     {
-        $syslog = new CustomSyslogUdpHandler($host, $port);
+        $syslog = new CustomSyslogUdpHandler($host, $port, LOG_USER, $log_level);
         $syslog->setHostName($hostname);
         $formatter = new LineFormatter("$prefix%channel%.%level_name%: %message% %extra%");
         $syslog->setFormatter($formatter);
@@ -111,4 +113,5 @@ class Php
     {
         return $this->getLogger()->pushHandler($this->handler);
     }
+
 }
