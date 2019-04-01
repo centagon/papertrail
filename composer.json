@@ -1,0 +1,38 @@
+{
+    "name": "centagon/papertrail",
+    "description": "Integrate Papertrail log monitor in your PHP applications",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stephane Coinon",
+            "email": "me@stephanecoinon.co.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "StephaneCoinon\\Papertrail\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Illuminate\\": "tests/fixtures/laravel/framework/Illuminate/"
+        },
+        "files": [
+            "tests/fixtures/stubs/laravel/helpers.php",
+            "tests/Support/helpers.php"
+        ]
+    },
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "monolog/monolog": "~1.11",
+        "guzzlehttp/guzzle": "^6.1",
+        "vlucas/phpdotenv": "^2.4",
+        "phpunit/phpunit": "^7.0"
+    },
+    "suggest": {
+        "monolog/monolog": "Allows more advanced logging of the application flow"
+    }
+}
